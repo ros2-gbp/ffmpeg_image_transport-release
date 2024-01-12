@@ -1,0 +1,8 @@
+ros-iron-ffmpeg-image-transport (1.2.0-1bullseye) bullseye; urgency=high
+
+  * initial release of ROS2 package
+  * Contributors: Akshay Srinivasan, Bernd Pfrommer, Francesco Ferroni, Michal Sojka, akssri
+
+ -- Bernd Pfrommer <bernd.pfrommer@gmail.com>  Thu, 11 Jan 2024 05:00:00 -0000
+
+
