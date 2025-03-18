@@ -1,1 +1,1 @@
-{"base": "f888440", "parent": "debian/rolling/ffmpeg_image_transport", "previous": "f75fa0e", "trim": "", "trimbase": ""}
+{"base": "ce8baf7", "parent": "debian/rolling/ffmpeg_image_transport", "previous": "79c901a", "trim": "", "trimbase": ""}
