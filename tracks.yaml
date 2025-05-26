@@ -123,7 +123,7 @@ tracks:
     name: ffmpeg_image_transport
     patches: null
     release_inc: '1'
-    release_repo_url: null
+    release_repo_url: git@github.com:ros2-gbp/ffmpeg_image_transport-release.git
     release_tag: :{version}
     ros_distro: rolling
     vcs_type: git
