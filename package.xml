@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>ffmpeg_image_transport</name>
-  <version>2.0.3</version>
+  <version>3.0.1</version>
   <description>
     ffmpeg_image_transport provides a plugin to image_transport for
     transparently sending an image stream encoded with ffmpeg.
@@ -29,7 +29,8 @@
   <test_depend>ament_lint_common</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_cmake_clang_format</test_depend>
-
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_cmake_black</test_depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>
 
