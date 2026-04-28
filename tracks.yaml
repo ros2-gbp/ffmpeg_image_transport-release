@@ -130,4 +130,5 @@ tracks:
     ros_distro: rolling
     vcs_type: git
     vcs_uri: https://github.com/ros-misc-utilities/ffmpeg_image_transport.git
-    version: :{auto}
+    version: 3.0.3
+    version_saved: :{auto}
