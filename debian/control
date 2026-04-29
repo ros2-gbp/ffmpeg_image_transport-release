@@ -1,0 +1,12 @@
+Source: ros-lyrical-ffmpeg-image-transport
+Section: misc
+Priority: optional
+Maintainer: Bernd Pfrommer <bernd.pfrommer@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-lyrical-ament-cmake, ros-lyrical-ament-cmake-black <!nocheck>, ros-lyrical-ament-cmake-clang-format <!nocheck>, ros-lyrical-ament-cmake-gtest <!nocheck>, ros-lyrical-ament-cmake-ros, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-ffmpeg-encoder-decoder, ros-lyrical-ffmpeg-image-transport-msgs, ros-lyrical-image-transport, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rcutils, ros-lyrical-ros-environment, ros-lyrical-sensor-msgs, ros-lyrical-std-msgs, ros-lyrical-ros-workspace, ros-lyrical-rosidl-typesupport-fastrtps-c, ros-lyrical-rosidl-typesupport-fastrtps-cpp
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-ffmpeg-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-lyrical-ffmpeg-encoder-decoder, ros-lyrical-ffmpeg-image-transport-msgs, ros-lyrical-image-transport, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rcutils, ros-lyrical-sensor-msgs, ros-lyrical-std-msgs, ros-lyrical-ros-workspace
+Description: ffmpeg_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with ffmpeg.
