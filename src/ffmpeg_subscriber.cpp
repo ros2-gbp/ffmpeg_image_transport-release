@@ -29,18 +29,27 @@ using PValue = ParameterDefinition::ParameterValue;
 using PDescriptor = ParameterDefinition::ParameterDescriptor;
 
 static const ParameterDefinition params[] = {
-  {PValue(""), PDescriptor()
-                 .set__name("decoder_av_options")
-                 .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_STRING)
-                 .set__description("comma-separated list of AV options: delay:0")
-                 .set__read_only(false)},
-  {PValue(false), PDescriptor()
-                    .set__name("decoder_measure_performance")
-                    .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_BOOL)
-                    .set__description("enable performance timing")
-                    .set__read_only(false)}};
+  {PValue(""),
+   PDescriptor()
+     .set__name("decoder_av_options")
+     .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_STRING)
+     .set__description("comma-separated list of AV options: delay:0")
+     .set__read_only(false),
+   ""},
+  {PValue(false),
+   PDescriptor()
+     .set__name("decoder_measure_performance")
+     .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_BOOL)
+     .set__description("enable performance timing")
+     .set__read_only(false),
+   ""}};
 
-FFMPEGSubscriber::FFMPEGSubscriber() : logger_(rclcpp::get_logger("FFMPEGSubscriber")) {}
+FFMPEGSubscriber::FFMPEGSubscriber() : logger_(rclcpp::get_logger("FFMPEGSubscriber"))
+{
+#ifndef IMAGE_TRANSPORT_USE_NODEINTERFACE
+  node_ = nullptr;
+#endif
+}
 
 FFMPEGSubscriber::~FFMPEGSubscriber() { decoder_.reset(); }
 
@@ -56,29 +65,20 @@ void FFMPEGSubscriber::shutdown()
 
 void FFMPEGSubscriber::frameReady(const ImageConstPtr & img, bool) const { (*userCallback_)(img); }
 
-#ifdef IMAGE_TRANSPORT_API_V1
 void FFMPEGSubscriber::subscribeImpl(
-  rclcpp::Node * node, const std::string & base_topic, const Callback & callback,
-  rmw_qos_profile_t custom_qos)
+  NodeType node, const std::string & base_topic, const Callback & callback, QoSType custom_qos,
+  rclcpp::SubscriptionOptions opt)
 {
   initialize(node, base_topic);
-  FFMPEGSubscriberPlugin::subscribeImpl(node, base_topic, callback, custom_qos);
-}
+#ifdef IMAGE_TRANSPORT_NEEDS_PUBLISHEROPTIONS
+  FFMPEGSubscriberPlugin::subscribeImpl(node, base_topic, callback, custom_qos, opt);
 #else
-void FFMPEGSubscriber::subscribeImpl(
-  rclcpp::Node * node, const std::string & base_topic, const Callback & callback,
-  QoSType custom_qos, rclcpp::SubscriptionOptions opt)
-{
-  initialize(node, base_topic);
-#ifdef IMAGE_TRANSPORT_API_V2
   (void)opt;  // to suppress compiler warning
   FFMPEGSubscriberPlugin::subscribeImpl(node, base_topic, callback, custom_qos);
-#else
-  FFMPEGSubscriberPlugin::subscribeImpl(node, base_topic, callback, custom_qos, opt);
 #endif
 }
-#endif
-void FFMPEGSubscriber::initialize(rclcpp::Node * node, const std::string & base_topic_o)
+
+void FFMPEGSubscriber::initialize(NodeType node, const std::string & base_topic_o)
 {
   node_ = node;
 #ifdef IMAGE_TRANSPORT_RESOLVES_BASE_TOPIC
@@ -87,7 +87,12 @@ void FFMPEGSubscriber::initialize(rclcpp::Node * node, const std::string & base_
   const std::string base_topic =
     node_->get_node_topics_interface()->resolve_topic_name(base_topic_o);
 #endif
-  uint ns_len = node_->get_effective_namespace().length();
+
+#ifdef IMAGE_TRANSPORT_USE_NODEINTERFACE
+  uint ns_len = std::string(node.get_node_base_interface()->get_namespace()).length();
+#else
+  uint ns_len = node->get_effective_namespace().length();
+#endif
   // if a namespace is given (ns_len > 1), then strip one more
   // character to avoid a leading "/" that will then become a "."
   uint ns_prefix_len = ns_len > 1 ? ns_len + 1 : ns_len;
@@ -100,7 +105,7 @@ void FFMPEGSubscriber::initialize(rclcpp::Node * node, const std::string & base_
   }
 }
 
-void FFMPEGSubscriber::declareParameter(rclcpp::Node * node, const ParameterDefinition & definition)
+void FFMPEGSubscriber::declareParameter(NodeType node, const ParameterDefinition & definition)
 {
   const auto v = definition.declare(node, paramNamespace_);
   const auto & n = definition.descriptor.name;
@@ -125,11 +130,13 @@ std::string FFMPEGSubscriber::getDecodersFromMap(const std::string & encoding)
       p_name += (j == 0 ? "." : "_") + x[j];
     }
     ParameterDefinition pdef{
-      PValue(""), PDescriptor()
-                    .set__name("decoders" + p_name)
-                    .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_STRING)
-                    .set__description("decoders for encoding: " + p_name)
-                    .set__read_only(false)};
+      PValue(""),
+      PDescriptor()
+        .set__name("decoders" + p_name)
+        .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_STRING)
+        .set__description("decoders for encoding: " + p_name)
+        .set__read_only(false),
+      ""};
     decoders = pdef.declare(node_, paramNamespace_).get<std::string>();
     if (!decoders.empty()) {
       break;
