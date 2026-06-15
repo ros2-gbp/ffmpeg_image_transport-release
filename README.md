@@ -1,3 +1,26 @@
+## ffmpeg_image_transport (rolling) - 3.0.4-1
+
+The packages in the `ffmpeg_image_transport` repository were released into the `rolling` distro by running `/usr/bin/bloom-release --edit-track --ros-distro rolling ffmpeg_image_transport` on `Mon, 15 Jun 2026 12:27:30 -0000`
+
+The `ffmpeg_image_transport` package was released.
+
+Version of package(s) in repository `ffmpeg_image_transport`:
+
+- upstream repository: https://github.com/ros-misc-utilities/ffmpeg_image_transport.git
+- release repository: https://github.com/ros2-gbp/ffmpeg_image_transport-release.git
+- rosdistro version: `3.0.3-2`
+- old version: `3.0.3-2`
+- new version: `3.0.4-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.3`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## ffmpeg_image_transport (lyrical) - 3.0.4-1
 
 The packages in the `ffmpeg_image_transport` repository were released into the `lyrical` distro by running `/usr/bin/bloom-release --edit-track --ros-distro lyrical ffmpeg_image_transport` on `Mon, 15 Jun 2026 12:25:31 -0000`
