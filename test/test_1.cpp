@@ -59,7 +59,11 @@ public:
   // since it only reads the parameters when the plugin is loaded
   void initialize()
   {
+#ifdef IMAGE_TRANSPORT_USE_NODEINTERFACE
+    image_transport_ = std::make_shared<ImageTransport>(image_transport::RequiredInterfaces(*this));
+#else
     image_transport_ = std::make_shared<ImageTransport>(std::shared_ptr<Node>(this, [](auto *) {}));
+#endif
     pub_ =
       std::make_shared<image_transport::Publisher>(image_transport_->advertise("camera/image", 1));
   }
@@ -128,9 +132,14 @@ public:
   }
   void initialize()
   {
-    image_transport::TransportHints hints(this);
+    // image_transport::TransportHints hints(this->get_node_interface());
     sub_ = std::make_shared<image_transport::Subscriber>(image_transport::create_subscription(
-      this, "camera/image", std::bind(&TestSubscriber::imageCallback, this, std::placeholders::_1),
+#ifdef IMAGE_TRANSPORT_USE_NODEINTERFACE
+      *this,
+#else
+      this,
+#endif
+      "camera/image", std::bind(&TestSubscriber::imageCallback, this, std::placeholders::_1),
       "ffmpeg", convert_profile(rmw_qos_profile_default)));
   }
   void shutDown()
@@ -179,11 +188,11 @@ void lossless_compression_test(
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::NodeOptions pub_options;
   auto pub_node = std::make_shared<TestPublisher>(ns, pub_options);
-  // pub_node->setBitRate(1000000);
   pub_node->setParameterBase(parameter_base);
   pub_node->setParameter<std::string>("encoder", encoder);
   pub_node->setParameter<std::string>("encoder_av_options", av_options);
-  pub_node->setParameter<int>("gop_size", 1);                   // to force immediate publish
+  pub_node->setParameter<int>("gop_size", 1);  // to force immediate publish
+  pub_node->setBitRate(1000000);
   pub_node->setParameter<std::string>("pixel_format", "gray");  // needed for lossless!
   pub_node->setNumberOfImages(num_images);
   pub_node->initialize();  // only after params have been set!
